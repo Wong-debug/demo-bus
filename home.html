@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - BotsQuick</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>BotsQuick</h1>
+            <p>NKK Express</p>
+        </header>
+
+        <main class="main-content">
+            <div class="card">
+                <h2 data-translate="welcome">Welcome</h2>
+                
+                <div class="button-group">
+                    <a href="booking.html" class="btn-primary" data-translate="bookBus">Book a Bus</a>
+                </div>
+
+                <div class="feature-placeholder">
+                    <p data-translate="myTickets">My Tickets</p>
+                    <p data-translate="comingSoon">(Coming Soon)</p>
+                </div>
+                <div class="feature-placeholder">
+                    <p data-translate="contactUs">Contact Us</p>
+                    <p data-translate="comingSoon">(Coming Soon)</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="lang-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = getCurrentLanguage();
+            applyTranslations(lang);
+        });
+    </script>
+</body>
+</html>

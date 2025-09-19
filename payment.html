@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate="completeBooking">Complete Your Booking - BotsQuick</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 data-translate="completeBooking">Complete Your Booking</h1>
+            <p data-translate="choosePayment">Choose payment method</p>
+        </header>
+
+        <main class="main-content">
+            <div class="card">
+                <div class="booking-summary">
+                    <h3 data-translate="bookingDetails">Booking Details</h3>
+                    <div id="payment-summary"></div>
+                </div>
+
+                <div class="customer-info">
+                    <h3 data-translate="yourInfo">Your Information</h3>
+                    <form id="customer-form">
+                        <div class="form-group">
+                            <label data-translate="fullName">Full Name</label>
+                            <input type="text" id="fullname" required data-translate="enterName" placeholder="Enter your full name">
+                        </div>
+                        <div class="form-group">
+                            <label data-translate="phoneNumber">Phone Number</label>
+                            <input type="tel" id="phone" required data-translate="enterPhone" placeholder="Enter your phone number">
+                        </div>
+                        <div class="form-group">
+                            <label data-translate="email">Email (Optional)</label>
+                            <input type="email" id="email" data-translate="enterEmail" placeholder="Enter your email">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="payment-methods">
+                    <h3 data-translate="paymentMethod">Payment Method</h3>
+                    
+                    <div class="payment-option" onclick="selectPayment('orange')">
+                        <input type="radio" name="payment" id="orange-money" value="orange">
+                        <label for="orange-money" data-translate="orangeMoney">Orange Money</label>
+                        <div class="payment-details">
+                            <p data-translate="ussdPrompt">You will receive a USSD prompt to confirm payment</p>
+                        </div>
+                    </div>
+
+                    <div class="payment-option" onclick="selectPayment('card')">
+                        <input type="radio" name="payment" id="card" value="card">
+                        <label for="card" data-translate="card">Credit/Debit Card</label>
+                        <div class="payment-details">
+                            <div class="form-group">
+                                <label data-translate="cardNumber">Card Number</label>
+                                <input type="text" id="card-number" placeholder="1234 5678 9012 3456" disabled>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label data-translate="expiryDate">Expiry Date</label>
+                                    <input type="text" id="expiry" placeholder="MM/YY" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label data-translate="cvv">CVV</label>
+                                    <input type="text" id="cvv" placeholder="123" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-option" onclick="selectPayment('cash')">
+                        <input type="radio" name="payment" id="cash" value="cash">
+                        <label for="cash" data-translate="cash">Pay Cash at Terminal</label>
+                        <div class="payment-details">
+                            <p data-translate="cashInstructions">Bring your booking reference to any NKK Express terminal to pay in cash</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button onclick="processPayment()" class="btn-primary" id="pay-btn" disabled data-translate="confirmPayment">Confirm Payment</button>
+                    <a href="seats.html" class="btn-secondary" data-translate="back">Back</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="lang-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = getCurrentLanguage();
+            applyTranslations(lang);
+            
+            const booking = JSON.parse(localStorage.getItem('bookingDetails') || '{}');
+            const summaryDiv = document.getElementById('payment-summary');
+            
+            if (booking.from && booking.to) {
+                summaryDiv.innerHTML = `
+                    <p><strong data-translate="route">Route</strong>: ${booking.from} → ${booking.to}</p>
+                    <p><strong data-translate="date">Date</strong>: ${booking.date}</p>
+                    <p><strong data-translate="time">Time</strong>: ${booking.time}</p>
+                    <p><strong data-translate="selectedSeat">Selected Seat</strong>: ${booking.seat || '-'}</p>
+                    <p><strong data-translate="totalPaid">Total Paid</strong>: ${booking.price ? booking.price.toFixed(2) : '0.00'} BWP</p>
+                `;
+            }
+        });
+
+        function selectPayment(method) {
+            document.getElementById('pay-btn').disabled = false;
+            if (method === 'card') {
+                document.getElementById('card-number').disabled = false;
+                document.getElementById('expiry').disabled = false;
+                document.getElementById('cvv').disabled = false;
+            }
+        }
+
+        function processPayment() {
+            const form = document.getElementById('customer-form');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const ref = 'NKK' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            const customerInfo = {
+                name: document.getElementById('fullname').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                paymentMethod: document.querySelector('input[name="payment"]:checked').value,
+                reference: ref
+            };
+            
+            const completeBooking = {...JSON.parse(localStorage.getItem('bookingDetails') || '{}'), ...customerInfo};
+            localStorage.setItem('completeBooking', JSON.stringify(completeBooking));
+            
+            window.location.href = 'confirmation.html';
+        }
+    </script>
+</body>
+</html>

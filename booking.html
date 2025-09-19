@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate="planTrip">Plan Your Trip - BotsQuick</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 data-translate="planTrip">Plan Your Trip</h1>
+            <p data-translate="selectRoute">Select your route and travel date</p>
+        </header>
+
+        <main class="main-content">
+            <div class="card">
+                <form id="booking-form">
+                    <div class="form-group">
+                        <label data-translate="from">From</label>
+                        <select id="from" required>
+                            <option value="" data-translate="selectDeparture">Select departure</option>
+                            <option value="gaborone">Gaborone</option>
+                            <option value="francistown">Francistown</option>
+                            <option value="maun">Maun</option>
+                            <option value="serowe">Serowe</option>
+                            <option value="molepolole">Molepolole</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-translate="to">To</label>
+                        <select id="to" required>
+                            <option value="" data-translate="selectDestination">Select destination</option>
+                            <option value="gaborone">Gaborone</option>
+                            <option value="francistown">Francistown</option>
+                            <option value="maun">Maun</option>
+                            <option value="serowe">Serowe</option>
+                            <option value="molepolole">Molepolole</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-translate="travelDate">Travel Date</label>
+                        <input type="date" id="date" required min="">
+                    </div>
+
+                    <div class="form-group">
+                        <label data-translate="preferredTime">Preferred Time</label>
+                        <select id="time" required>
+                            <option value="" data-translate="selectTime">Select time</option>
+                            <option value="06:00">06:00</option>
+                            <option value="08:00">08:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="18:00">18:00</option>
+                        </select>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn-primary" data-translate="chooseSeats">Choose Seats</button>
+                        <a href="home.html" class="btn-secondary" data-translate="back">Back</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="lang-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = getCurrentLanguage();
+            applyTranslations(lang);
+            
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').min = today;
+            
+            document.getElementById('booking-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const bookingDetails = {
+                    from: document.getElementById('from').value,
+                    to: document.getElementById('to').value,
+                    date: document.getElementById('date').value,
+                    time: document.getElementById('time').value
+                };
+                localStorage.setItem('bookingDetails', JSON.stringify(bookingDetails));
+                window.location.href = 'seats.html';
+            });
+        });
+    </script>
+</body>
+</html>

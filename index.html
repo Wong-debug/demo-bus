@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BotsQuick - NKK Express</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="logo-placeholder">NKK</div>
+            <h1>BotsQuick</h1>
+            <p class="tagline" data-translate="byNkk">By NKK Express</p>
+            <p data-translate="chooseLanguage">Choose your language</p>
+            
+            <div class="button-group">
+                <button class="btn-primary" onclick="chooseLanguage('en')">English</button>
+                <button class="btn-secondary" onclick="chooseLanguage('tn')">Setswana</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="lang-config.js"></script>
+    <script>
+        function chooseLanguage(lang) {
+            localStorage.setItem('userLanguage', lang);
+            window.location.href = "home.html";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate="selectSeat">Select Your Seat - BotsQuick</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 data-translate="selectSeat">Select Your Seat</h1>
+            <p data-translate="choosePreferred">Choose your preferred seat</p>
+        </header>
+
+        <main class="main-content">
+            <div class="card">
+                <div class="trip-summary">
+                    <h3 data-translate="tripSummary">Trip Summary</h3>
+                    <p><span data-translate="route">Route</span>: <span id="route-display">-</span></p>
+                    <p><span data-translate="date">Date</span>: <span id="date-display">-</span></p>
+                    <p><span data-translate="time">Time</span>: <span id="time-display">-</span></p>
+                </div>
+
+                <div class="bus-layout">
+                    <h3 data-translate="busLayout">Bus Layout</h3>
+                    <div class="bus-driver" data-translate="driver">Driver</div>
+                    <div class="seats-grid" id="seats-container"></div>
+                    
+                    <div class="seat-legend">
+                        <div class="legend-item">
+                            <div class="seat available"></div>
+                            <span data-translate="available">Available</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="seat selected"></div>
+                            <span data-translate="selected">Selected</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="seat occupied"></div>
+                            <span data-translate="occupied">Occupied</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="selection-summary">
+                    <p><span data-translate="selectedSeat">Selected Seat</span>: <span id="selected-seat">-</span></p>
+                    <p><span data-translate="price">Price</span>: <span id="seat-price">0.00</span> BWP</p>
+                </div>
+
+                <div class="button-group">
+                    <button onclick="proceedToPayment()" class="btn-primary" disabled id="proceed-btn" data-translate="continuePayment">Continue to Payment</button>
+                    <a href="booking.html" class="btn-secondary" data-translate="back">Back</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="lang-config.js"></script>
+    <script>
+        let selectedSeat = null;
+        const pricePerSeat = 120;
+        const occupiedSeats = [2, 5, 8, 12, 15, 18, 22, 25, 28];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = getCurrentLanguage();
+            applyTranslations(lang);
+            
+            const booking = JSON.parse(localStorage.getItem('bookingDetails') || '{}');
+            if (booking.from && booking.to) {
+                document.getElementById('route-display').textContent = `${booking.from} → ${booking.to}`;
+                document.getElementById('date-display').textContent = booking.date;
+                document.getElementById('time-display').textContent = booking.time;
+            }
+
+            generateSeats();
+        });
+
+        function generateSeats() {
+            const container = document.getElementById('seats-container');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= 30; i++) {
+                const seat = document.createElement('div');
+                seat.className = 'seat';
+                seat.textContent = i;
+                
+                if (occupiedSeats.includes(i)) {
+                    seat.classList.add('occupied');
+                } else {
+                    seat.classList.add('available');
+                    seat.onclick = () => selectSeat(i);
+                }
+                
+                container.appendChild(seat);
+            }
+        }
+
+        function selectSeat(number) {
+            if (selectedSeat === number) {
+                selectedSeat = null;
+                document.querySelectorAll('.seat.selected').forEach(s => s.classList.remove('selected'));
+                updateSelectionSummary();
+            } else {
+                document.querySelectorAll('.seat.selected').forEach(s => s.classList.remove('selected'));
+                const newSeat = document.querySelector(`.seat:nth-child(${number})`);
+                newSeat.classList.add('selected');
+                selectedSeat = number;
+                
+                const booking = JSON.parse(localStorage.getItem('bookingDetails') || '{}');
+                booking.seat = number;
+                booking.price = pricePerSeat;
+                localStorage.setItem('bookingDetails', JSON.stringify(booking));
+                
+                updateSelectionSummary();
+            }
+        }
+
+        function updateSelectionSummary() {
+            const seatElem = document.getElementById('selected-seat');
+            const priceElem = document.getElementById('seat-price');
+            const proceedBtn = document.getElementById('proceed-btn');
+            
+            if (selectedSeat) {
+                seatElem.textContent = selectedSeat;
+                priceElem.textContent = pricePerSeat.toFixed(2);
+                proceedBtn.disabled = false;
+            } else {
+                seatElem.textContent = '-';
+                priceElem.textContent = '0.00';
+                proceedBtn.disabled = true;
+            }
+        }
+
+        function proceedToPayment() {
+            if (selectedSeat) window.location.href = 'payment.html';
+        }
+    </script>
+</body>
+</html>
