@@ -327,10 +327,12 @@
                 element.classList.remove('selected');
                 element.classList.add('available');
             } else {
-                // Select
-                selectedSeats.add(seatNumber);
-                element.classList.remove('available');
-                element.classList.add('selected');
+                // Select (only if not occupied)
+                if (!occupiedSeats.includes(seatNumber)) {
+                    selectedSeats.add(seatNumber);
+                    element.classList.remove('available');
+                    element.classList.add('selected');
+                }
             }
             
             updateSelectionSummary();
@@ -340,9 +342,11 @@
             const count = selectedSeats.size;
             const total = count * pricePerSeat;
             
+            // Update summary text
             document.getElementById('selection-summary').textContent = 
                 `Selected: ${count} seat${count !== 1 ? 's' : ''} | Total: ${total} BWP`;
             
+            // Enable/disable proceed button
             document.getElementById('proceed-btn').disabled = count === 0;
             
             // Save to localStorage
@@ -359,4 +363,4 @@
         }
     </script>
 </body>
-</html>
+                        </html>
