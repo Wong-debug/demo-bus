@@ -88,9 +88,9 @@
         }
 
         .seat-number.selected {
-            background: #75AADB;
-            border-color: #75AADB;
-            color: white;
+            background: #75AADB !important;
+            border-color: #75AADB !important;
+            color: white !important;
         }
 
         .seat-number.occupied {
@@ -314,28 +314,35 @@
                 seat.classList.add('occupied');
             } else {
                 seat.classList.add('available');
-                seat.onclick = () => toggleSeat(seatNumber, seat);
+                seat.onclick = function() { toggleSeat(seatNumber, seat); };
             }
             
             return seat;
         }
 
         function toggleSeat(seatNumber, element) {
+            // Check if seat is occupied - if yes, do nothing
+            if (occupiedSeats.includes(seatNumber)) {
+                return;
+            }
+            
             if (selectedSeats.has(seatNumber)) {
-                // Deselect
+                // Deselect this seat
                 selectedSeats.delete(seatNumber);
                 element.classList.remove('selected');
                 element.classList.add('available');
             } else {
-                // Select (only if not occupied)
-                if (!occupiedSeats.includes(seatNumber)) {
-                    selectedSeats.add(seatNumber);
-                    element.classList.remove('available');
-                    element.classList.add('selected');
-                }
+                // Select this seat
+                selectedSeats.add(seatNumber);
+                element.classList.remove('available');
+                element.classList.add('selected');
             }
             
+            // Update the summary
             updateSelectionSummary();
+            
+            // Debug - show what's selected
+            console.log('Selected seats:', Array.from(selectedSeats));
         }
 
         function updateSelectionSummary() {
@@ -363,4 +370,4 @@
         }
     </script>
 </body>
-                        </html>
+</html>
